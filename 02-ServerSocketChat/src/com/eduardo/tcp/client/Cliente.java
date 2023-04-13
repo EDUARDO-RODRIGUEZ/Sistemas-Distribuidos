@@ -1,4 +1,4 @@
-package com.eduardo.tcp;
+package com.eduardo.tcp.client;
 
 import java.io.BufferedReader;
 import java.io.IOException;
