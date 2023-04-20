@@ -34,6 +34,7 @@ public class Server implements ServerListener {
     }
 
     public void listen() {
+        pingConnections();
         try {
             server = new ServerSocket(port);
             handlerConnection = new HandlerConnection(server);
@@ -87,6 +88,24 @@ public class Server implements ServerListener {
                 connection.sendMessage(message);
             }
         });
+    }
+
+    public void pingConnections() {
+        Thread ping = new Thread(() -> {
+            while (true) {
+                Map<UUID, Connection> listConnections = Server.this.connections;
+                listConnections.forEach((uuid, connection) -> {
+                    try {
+                        if (!(connection.getSocket().getInetAddress().isReachable(3000))) {
+                            Server.this.ListenerClose(new OnClose(connection, "Conexion Perdida !!!"));
+                        }
+                    } catch (IOException e) {
+                        System.out.println(LOG + " : " + e.getMessage());
+                    }
+                });
+            }
+        });
+        executor.execute(ping);
     }
 
 }
