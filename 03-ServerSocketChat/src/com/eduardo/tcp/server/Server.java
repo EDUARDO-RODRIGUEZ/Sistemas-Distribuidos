@@ -7,6 +7,7 @@ import com.eduardo.event.OnClose;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ExecutorService;
@@ -83,7 +84,6 @@ public class Server implements ServerListener {
     @Override
     public void ListenerClose(OnClose e) {
         Connection connection = e.getConnection();
-        connection.close();
         connections.remove(connection.getId());
         System.out.println(LOG + " : " + "Closed Connected Socket " + connection.getSocket().getInetAddress() + ":" + connection.getSocket().getPort());
         sendAll(connection.getId().toString(), "<-" + connection.getName() + " se ha desconectado");
@@ -101,16 +101,18 @@ public class Server implements ServerListener {
     public void pingConnections() {
         Thread ping = new Thread(() -> {
             while (true) {
-                Map<UUID, Connection> listConnections = Server.this.connections;
-                listConnections.forEach((uuid, connection) -> {
+                Iterator<Map.Entry<UUID, Connection>> iterator = connections.entrySet().iterator();
+                while (iterator.hasNext()) {
+                    Map.Entry<UUID, Connection> element = iterator.next();
                     try {
-                        if (!(connection.getSocket().getInetAddress().isReachable(3000))) {
-                            Server.this.ListenerClose(new OnClose(connection, "Conexion Perdida !!!"));
+                        if (!(element.getValue().getSocket().getInetAddress().isReachable(3000))) {
+                            ListenerClose(new OnClose(element.getValue(), "Conexion Perdida !!!"));
+                            System.out.println("Conexion Perdidad");
                         }
                     } catch (IOException e) {
                         System.out.println(LOG + " : " + e.getMessage());
                     }
-                });
+                }
             }
         });
         executor.execute(ping);
