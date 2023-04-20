@@ -12,11 +12,11 @@ public class CustomString {
         pos = 0;
     }
 
-    public String readUntil(String cadena) {
+    public String readUntil(String cadena, String key) {
         String line = "";
         String cadenafilter = cadena.substring(pos);
         int distance = cadena.length() - cadenafilter.length();
-        int salto = cadenafilter.indexOf("&");
+        int salto = cadenafilter.indexOf(key);
         if (salto == -1) {
             line = cadena.substring(pos);
             pos = 0;

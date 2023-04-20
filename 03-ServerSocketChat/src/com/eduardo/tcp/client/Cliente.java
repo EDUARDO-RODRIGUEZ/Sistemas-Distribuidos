@@ -5,6 +5,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Scanner;
 
 public class Cliente {
@@ -25,6 +27,7 @@ public class Cliente {
         Scanner s = new Scanner(System.in);
         System.out.print("Ingrese su nombre:");
         name = s.nextLine().trim();
+        System.out.println("------------------------------");
         try {
             server = new Socket("localhost", 8000);
             bufferedReader = new BufferedReader(new InputStreamReader(server.getInputStream()));
@@ -38,41 +41,67 @@ public class Cliente {
         try {
             String lineId = bufferedReader.readLine();
             id = lineId.substring(lineId.indexOf("[") + 1, lineId.indexOf("]"));
+            printWriter.println(String.format(""
+                    + "ID[%s]&"
+                    + "NAME[%s]&",
+                    id, name)
+            );
+            printWriter.flush();
         } catch (IOException e) {
             System.out.println(LOG + " : " + e.getMessage());
         }
     }
 
     public void OnMenssage() {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                String message = "";
-                try {
-                    while ((message = bufferedReader.readLine()) != null) {
-                        System.out.println(message);
-                    }
-                } catch (IOException e) {
-                    System.out.println(LOG + " : " + e.getMessage());
+        Thread thread = new Thread(() -> {
+            String message = "";
+            try {
+                while ((message = bufferedReader.readLine()) != null) {
+                    System.out.println(message);
                 }
+            } catch (IOException e) {
+                System.out.println(LOG + " : " + e.getMessage());
             }
-        }).start();
+
+            System.out.println("Finaly1");
+        });
+        thread.start();
     }
 
     public void SendMessage() {
-        while (true) {
-            Scanner scanner = new Scanner(System.in);
-            String message = scanner.nextLine();
-            if (message.contains("close")) {
-                break;
+        Thread thread = new Thread(() -> {
+            while (true) {
+                Scanner scanner = new Scanner(System.in);
+                String message = scanner.nextLine();
+                if (message.contains("close")) {
+                    close();
+                    break;
+                }
+                printWriter.println(String.format(""
+                        + "ID[%s]&"
+                        + "DATA[%s]",
+                        id, message.trim())
+                );
+                printWriter.flush();
             }
-            printWriter.println(String.format(""
-                    + "ID[%s]&"
-                    + "NAME[%s]&"
-                    + "DATA[%s]",
-                    id, name, message.trim())
-            );
-            printWriter.flush();
+        });
+        thread.start();
+    }
+
+    public void close() {
+        try {
+            if (server != null) {
+                server.close();
+            }
+            if (bufferedReader != null) {
+                bufferedReader.close();
+            }
+            if (printWriter != null) {
+                printWriter.close();
+            }
+        } catch (IOException e) {
+            System.out.println(LOG + " : " + e.getMessage());
         }
     }
+
 }

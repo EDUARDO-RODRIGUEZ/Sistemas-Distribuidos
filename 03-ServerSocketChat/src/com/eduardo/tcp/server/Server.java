@@ -65,12 +65,19 @@ public class Server implements ServerListener {
 
     @Override
     public void ListenerConnection(OnConnection e) {
-        Connection connection = new Connection(e.getSocket(), UUID.randomUUID());
-        connection.establishNegotiation();
-        connection.addServerListener(this);
-        connections.put(connection.getId(), connection);
-        executor.execute(connection);
-        System.out.println(LOG + " : " + "New Connected Socket " + e.getSocket().getInetAddress() + ":" + e.getSocket().getPort());
+        Thread thread = new Thread(() -> {
+            Connection connection = new Connection(e.getSocket(), UUID.randomUUID());
+            if (connection.establishNegotiation()) {
+                connection.addServerListener(this);
+                connections.put(connection.getId(), connection);
+                executor.execute(connection);
+                System.out.println(LOG + " : " + "New Connected Socket " + e.getSocket().getInetAddress() + ":" + e.getSocket().getPort());
+                sendAll(connection.getId().toString(), "->" + connection.getName() + " se ha conectado");
+            } else {
+                connection.close();
+            }
+        });
+        executor.execute(thread);
     }
 
     @Override
@@ -79,6 +86,7 @@ public class Server implements ServerListener {
         connection.close();
         connections.remove(connection.getId());
         System.out.println(LOG + " : " + "Closed Connected Socket " + connection.getSocket().getInetAddress() + ":" + connection.getSocket().getPort());
+        sendAll(connection.getId().toString(), "<-" + connection.getName() + " se ha desconectado");
     }
 
     public void sendAll(String id, String message) {
