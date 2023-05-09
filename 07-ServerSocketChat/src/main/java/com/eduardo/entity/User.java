@@ -1,5 +1,6 @@
 package com.eduardo.entity;
 
+import com.eduardo.server.game.Tablero;
 import java.util.UUID;
 
 public class User {
@@ -8,11 +9,10 @@ public class User {
     private String name;
     private String password;
     private UUID sessionId;
+    private Tablero tablero;
 
     public User(Integer id, String name, String password) {
-        this.id = id;
-        this.name = name;
-        this.password = password;
+        this(id, name, password, null);
     }
 
     public User(Integer id, String name, String password, UUID sessionId) {
@@ -20,6 +20,7 @@ public class User {
         this.name = name;
         this.password = password;
         this.sessionId = sessionId;
+        this.tablero = new Tablero(5, 5);
     }
 
     public String getName() {
@@ -54,9 +55,8 @@ public class User {
         this.sessionId = sessionId;
     }
 
-    @Override
-    public String toString() {
-        return "User{" + "id=" + id + ", name=" + name + ", password=" + password + ", sessionId=" + sessionId + '}';
+    public Tablero getTablero() {
+        return tablero;
     }
 
 }

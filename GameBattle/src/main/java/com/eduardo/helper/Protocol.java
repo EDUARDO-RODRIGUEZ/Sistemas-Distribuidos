@@ -19,10 +19,6 @@ public class Protocol {
         return "";
     }
 
-    public static String setFormatLogin(String sessionId, String name, String password) {
-        return String.format("SESSIONID[%s]&NAME[%s]&PASSWORD[%s]&FORMAT[LOGIN]&", sessionId, name, password);
-    }
-
     public static Map<String, String> formatLogin(String message) throws ErrorFormatException {
         Map<String, String> map = new HashMap<>();
         CustomString cs = new CustomString();
@@ -36,10 +32,6 @@ public class Protocol {
         map.put("NAME", cs.readContent(lineName, "[", "]"));
         map.put("PASSWORD", cs.readContent(linePassword, "[", "]"));
         return map;
-    }
-
-    public static String setFormatRegister(String sessionId, String name, String password) {
-        return String.format("SESSIONID[%s]&NAME[%s]&PASSWORD[%s]&FORMAT[REGISTER]&", sessionId, name, password);
     }
 
     public static Map<String, String> formatRegister(String message) throws ErrorFormatException {
@@ -57,10 +49,6 @@ public class Protocol {
         return map;
     }
 
-    public static String setFormatData(String sessionId, String data) {
-        return String.format("SESSIONID[%s]&DATA[%s]&FORMAT[DATA]&", sessionId, data);
-    }
-
     public static Map<String, String> formatData(String message) throws ErrorFormatException {
         CustomString cs = new CustomString();
         Map<String, String> map = new HashMap();
@@ -74,8 +62,15 @@ public class Protocol {
         return map;
     }
 
-    public static String setFormatResponse(boolean ok, Response response, String message) {
-        return String.format("OK[%s]&MESSAGE[%s]&RESPONSE[%s]&FORMAT[RESPONSE]&", ok, message, response.name());
+    public static Map<String, String> formatID(String message) throws ErrorFormatException {
+        CustomString cs = new CustomString();
+        Map<String, String> map = new HashMap();
+        String lineId = cs.readUntil(message, "&");
+        if (!lineId.contains("SESSIONID")) {
+            throw new ErrorFormatException("format Data Error");
+        }
+        map.put("SESSIONID", cs.readContent(lineId, "[", "]"));
+        return map;
     }
 
     public static Map<String, String> formatResponse(String message) throws ErrorFormatException {
@@ -91,6 +86,18 @@ public class Protocol {
         map.put("MESSAGE", cs.readContent(lineMessage, "[", "]"));
         map.put("RESPONSE", cs.readContent(lineResponse, "[", "]"));
         return map;
+    }
+
+    public static String setFormatLogin(String sessionId, String name, String password) {
+        return String.format("SESSIONID[%s]&NAME[%s]&PASSWORD[%s]&FORMAT[LOGIN]&", sessionId, name, password);
+    }
+
+    public static String setFormatRegister(String sessionId, String name, String password) {
+        return String.format("SESSIONID[%s]&NAME[%s]&PASSWORD[%s]&FORMAT[REGISTER]&", sessionId, name, password);
+    }
+
+    public static String setFormatData(String sessionId, String data) {
+        return String.format("SESSIONID[%s]&DATA[%s]&FORMAT[DATA]&", sessionId, data);
     }
 
     public static String setFormatId(String sessionId) {

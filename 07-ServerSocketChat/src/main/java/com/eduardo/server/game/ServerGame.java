@@ -4,6 +4,7 @@ import at.favre.lib.crypto.bcrypt.BCrypt;
 import com.eduardo.entity.User;
 import com.eduardo.event.OnUserConnected;
 import com.eduardo.event.OnUserData;
+import com.eduardo.helper.Response;
 import com.eduardo.helper.ErrorFormatException;
 import com.eduardo.helper.Protocol;
 import com.eduardo.tcp.server.Server;
@@ -22,7 +23,7 @@ public class ServerGame implements ServerListenerUser {
 
     private Map<UUID, User> users;
     private Server server;
-            
+
     public ServerGame() {
         this(8000);
     }
@@ -53,7 +54,7 @@ public class ServerGame implements ServerListenerUser {
 
     @Override
     public void ListenerUserConnected(OnUserConnected e) {
-        server.send(e.getSessionId(), "&AUTHENTICATED[]&", TypeSend.ONE);
+        server.send(e.getSessionId(), Protocol.setFormatAuthenticated(), TypeSend.ONE);
     }
 
     @Override
@@ -78,16 +79,19 @@ public class ServerGame implements ServerListenerUser {
             Map<String, String> data = Protocol.formatLogin(e.getData());
             User user = findUserByNickName(data.get("NAME"));
             if (Objects.isNull(user)) {
-                System.out.println("User Not Found");
+                System.out.println(LOG + " : " + "User Not Found");
+                server.send(UUID.fromString(data.get("SESSIONID")), Protocol.setFormatResponse(false, Response.LOGIN, "User NotFound !!!"), TypeSend.ONE);
                 return;
             }
             BCrypt.Result result = BCrypt.verifyer(BCrypt.Version.VERSION_2A).verify(data.get("PASSWORD").toCharArray(), user.getPassword());
             if (!result.verified) {
-                System.out.println("Passsowrd Incorrect !!!");
+                System.out.println(LOG + " : " + "Passsowrd Incorrect !!!");
+                server.send(UUID.fromString(data.get("SESSIONID")), Protocol.setFormatResponse(false, Response.LOGIN, "User password incorrect !!!"), TypeSend.ONE);
                 return;
             }
             user.setSessionId(UUID.fromString(data.get("SESSIONID")));
             System.out.println(LOG + " : New User Login Connected");
+            server.send(UUID.fromString(data.get("SESSIONID")), Protocol.setFormatResponse(true, Response.LOGIN, "User successfully logged in !!!"), TypeSend.ONE);
         } catch (ErrorFormatException ex) {
             System.out.println(LOG + ex.getMessage());
         }
@@ -98,10 +102,12 @@ public class ServerGame implements ServerListenerUser {
             Map<String, String> data = Protocol.formatRegister(e.getData());
             if (Objects.nonNull(findUserByNickName(data.get("NAME")))) {
                 System.out.println("No se pude registrar ya existe el user con ese nombre");
+                server.send(UUID.fromString(data.get("SESSIONID")), Protocol.setFormatResponse(false, Response.REGISTER, "Not can register the user exists !!!"), TypeSend.ONE);
                 return;
             }
             users.put(UUID.randomUUID(), new User(null, data.get("NAME"), data.get("PASSWORD"), UUID.fromString(data.get("SESSIONID"))));
             System.out.println(LOG + " : New User Register Connected");
+            server.send(UUID.fromString(data.get("SESSIONID")), Protocol.setFormatResponse(true, Response.REGISTER, "User successfully registered !!!"), TypeSend.ONE);
         } catch (ErrorFormatException ex) {
             System.out.println(LOG + ex.getMessage());
         }
