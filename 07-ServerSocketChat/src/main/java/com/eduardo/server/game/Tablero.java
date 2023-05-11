@@ -12,14 +12,9 @@ public class Tablero {
         this.data = new int[nf][nc];
     }
 
-    public void set(int fila, int columna, TableroValue value) {
-        for (int f = 0; f < nf; f++) {
-            for (int c = 0; c < nc; c++) {
-                if (f == fila && c == columna) {
-                    data[f][c] = value.getValue();
-                    break;
-                }
-            }
+    public void set(int fila, int columna, int value) {
+        if ((fila >= 0 && fila < nf) && (columna >= 0 && columna < nc)) {
+            data[fila][columna] = value;
         }
     }
 
@@ -35,10 +30,9 @@ public class Tablero {
         for (int f = 0; f < nf; f++) {
             System.out.print("[");
             for (int c = 0; c < nc; c++) {
-                System.out.print(" " + data[f][c] + " ");
+                System.out.print(data[f][c]);
             }
             System.out.println("]");
         }
     }
-
 }

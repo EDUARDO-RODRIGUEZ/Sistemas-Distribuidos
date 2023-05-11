@@ -198,6 +198,7 @@ public class Login extends javax.swing.JPanel implements Screen {
         SocketClient socketClient = main.getSocketClient();
         String data = Protocol.setFormatLogin(String.valueOf(socketClient.getSessionId()), user, password);
         socketClient.send(data);
+        main.loadScreen(new Game(main));
     }//GEN-LAST:event_jButtonLoginActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

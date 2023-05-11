@@ -59,6 +59,10 @@ public class ServerGame implements ServerListenerUser {
 
     @Override
     public void ListenerUserData(OnUserData e) {
+        routerData(e);
+    }
+
+    public void routerData(OnUserData e) {
         switch (Protocol.getFormat(e.getData())) {
             case "LOGIN":
                 login(e);
@@ -68,6 +72,9 @@ public class ServerGame implements ServerListenerUser {
                 break;
             case "DATA":
                 data(e);
+                break;
+            case "TABLERO_SET":
+                setTablero(e);
                 break;
             default:
                 System.out.println(LOG + " : Format Incorrected!!!");
@@ -122,6 +129,22 @@ public class ServerGame implements ServerListenerUser {
                 return;
             }
             server.send(user.getSessionId(), user.getName() + " : " + data.get("DATA"), TypeSend.ALL);
+        } catch (ErrorFormatException ex) {
+            System.out.println(LOG + ex.getMessage());
+        }
+    }
+
+    public void setTablero(OnUserData e) {
+        try {
+            Map<String, String> data = Protocol.formatTableroSet(e.getData());
+            User user = findUserBySessionId(UUID.fromString(data.get("SESSIONID")));
+            if (Objects.isNull(user)) {
+                System.out.println("SESSIONID NO VALIDO !!!");
+                return;
+            }
+            Tablero tablero = user.getTablero();
+            tablero.set(Integer.parseInt(data.get("ROW")), Integer.parseInt(data.get("COL")), Integer.parseInt(data.get("VALUE")));
+            tablero.show();
         } catch (ErrorFormatException ex) {
             System.out.println(LOG + ex.getMessage());
         }

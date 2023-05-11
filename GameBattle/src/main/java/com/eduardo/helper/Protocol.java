@@ -7,7 +7,7 @@ import java.util.regex.Pattern;
 
 public class Protocol {
 
-    public static String regexFormat = "FORMAT\\[(LOGIN|REGISTER|DATA|ID|AUTHENTICATED|RESPONSE){1}\\]&";
+    public static String regexFormat = "FORMAT\\[(DATA|ID|AUTHENTICATED|RESPONSE){1}\\]&";
 
     public static String getFormat(String message) {
         CustomString cs = new CustomString();
@@ -17,36 +17,6 @@ public class Protocol {
             return cs.readContent(matcher.group(), "[", "]");
         }
         return "";
-    }
-
-    public static Map<String, String> formatLogin(String message) throws ErrorFormatException {
-        Map<String, String> map = new HashMap<>();
-        CustomString cs = new CustomString();
-        String lineId = cs.readUntil(message, "&");
-        String lineName = cs.readUntil(message, "&");
-        String linePassword = cs.readUntil(message, "&");
-        if (!lineId.contains("SESSIONID") || !lineName.contains("NAME") || !linePassword.contains("PASSWORD")) {
-            throw new ErrorFormatException("format Login Error");
-        }
-        map.put("SESSIONID", cs.readContent(lineId, "[", "]"));
-        map.put("NAME", cs.readContent(lineName, "[", "]"));
-        map.put("PASSWORD", cs.readContent(linePassword, "[", "]"));
-        return map;
-    }
-
-    public static Map<String, String> formatRegister(String message) throws ErrorFormatException {
-        Map<String, String> map = new HashMap<>();
-        CustomString cs = new CustomString();
-        String lineId = cs.readUntil(message, "&");
-        String lineName = cs.readUntil(message, "&");
-        String linePassword = cs.readUntil(message, "&");
-        if (!lineId.contains("SESSIONID") || !lineName.contains("NAME") || !linePassword.contains("PASSWORD")) {
-            throw new ErrorFormatException("format Register Error");
-        }
-        map.put("SESSIONID", cs.readContent(lineId, "[", "]"));
-        map.put("NAME", cs.readContent(lineName, "[", "]"));
-        map.put("PASSWORD", cs.readContent(linePassword, "[", "]"));
-        return map;
     }
 
     public static Map<String, String> formatData(String message) throws ErrorFormatException {
@@ -104,8 +74,10 @@ public class Protocol {
         return String.format("SESSIONID[%s]&FORMAT[ID]&", sessionId);
     }
 
-    public static String setFormatAuthenticated() {
-        return String.format("FORMAT[AUTHENTICATED]&");
+    public static String setFormatTableroSet(String sessionId, int row, int col, TableroValue tableroValue) {
+        return String.format("SESSIONID[%s]&ROW[%s]&COL[%s]&VALUE[%s]&FORMAT[TABLERO_SET]&",
+                sessionId, String.valueOf(row), String.valueOf(col), String.valueOf(tableroValue.getValue())
+        );
     }
 
 }

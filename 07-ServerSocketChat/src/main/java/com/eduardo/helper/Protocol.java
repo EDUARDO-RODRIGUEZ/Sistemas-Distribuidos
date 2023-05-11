@@ -7,7 +7,7 @@ import java.util.regex.Pattern;
 
 public class Protocol {
 
-    public static String regexFormat = "FORMAT\\[(LOGIN|REGISTER|DATA|ID|AUTHENTICATED|RESPONSE){1}\\]&";
+    public static String regexFormat = "FORMAT\\[(LOGIN|REGISTER|TABLERO_SET|DATA){1}\\]&";
 
     public static String getFormat(String message) {
         CustomString cs = new CustomString();
@@ -17,10 +17,6 @@ public class Protocol {
             return cs.readContent(matcher.group(), "[", "]");
         }
         return "";
-    }
-
-    public static String setFormatLogin(String sessionId, String name, String password) {
-        return String.format("SESSIONID[%s]&NAME[%s]&PASSWORD[%s]&FORMAT[LOGIN]&", sessionId, name, password);
     }
 
     public static Map<String, String> formatLogin(String message) throws ErrorFormatException {
@@ -38,10 +34,6 @@ public class Protocol {
         return map;
     }
 
-    public static String setFormatRegister(String sessionId, String name, String password) {
-        return String.format("SESSIONID[%s]&NAME[%s]&PASSWORD[%s]&FORMAT[REGISTER]&", sessionId, name, password);
-    }
-
     public static Map<String, String> formatRegister(String message) throws ErrorFormatException {
         Map<String, String> map = new HashMap<>();
         CustomString cs = new CustomString();
@@ -57,8 +49,21 @@ public class Protocol {
         return map;
     }
 
-    public static String setFormatData(String sessionId, String data) {
-        return String.format("SESSIONID[%s]&DATA[%s]&FORMAT[DATA]&", sessionId, data);
+    public static Map<String, String> formatTableroSet(String message) throws ErrorFormatException {
+        Map<String, String> map = new HashMap<>();
+        CustomString cs = new CustomString();
+        String lineId = cs.readUntil(message, "&");
+        String lineRow = cs.readUntil(message, "&");
+        String lineCol = cs.readUntil(message, "&");
+        String lineValue = cs.readUntil(message, "&");
+        if (!lineId.contains("SESSIONID") || !lineRow.contains("ROW") || !lineCol.contains("COL") || !lineValue.contains("VALUE")) {
+            throw new ErrorFormatException("format Tablero Set");
+        }
+        map.put("SESSIONID", cs.readContent(lineId, "[", "]"));
+        map.put("ROW", cs.readContent(lineRow, "[", "]"));
+        map.put("COL", cs.readContent(lineCol, "[", "]"));
+        map.put("VALUE", cs.readContent(lineValue, "[", "]"));
+        return map;
     }
 
     public static Map<String, String> formatData(String message) throws ErrorFormatException {
@@ -76,21 +81,6 @@ public class Protocol {
 
     public static String setFormatResponse(boolean ok, Response response, String message) {
         return String.format("OK[%s]&MESSAGE[%s]&RESPONSE[%s]&FORMAT[RESPONSE]&", ok, message, response.name());
-    }
-
-    public static Map<String, String> formatResponse(String message) throws ErrorFormatException {
-        Map<String, String> map = new HashMap<>();
-        CustomString cs = new CustomString();
-        String lineOK = cs.readUntil(message, "&");
-        String lineMessage = cs.readUntil(message, "&");
-        String lineResponse = cs.readUntil(message, "&");
-        if (!lineOK.contains("OK") || !lineMessage.contains("MESSAGE") || !lineResponse.contains("RESPONSE")) {
-            throw new ErrorFormatException("format Response Error");
-        }
-        map.put("OK", cs.readContent(lineOK, "[", "]"));
-        map.put("MESSAGE", cs.readContent(lineMessage, "[", "]"));
-        map.put("RESPONSE", cs.readContent(lineResponse, "[", "]"));
-        return map;
     }
 
     public static String setFormatId(String sessionId) {
