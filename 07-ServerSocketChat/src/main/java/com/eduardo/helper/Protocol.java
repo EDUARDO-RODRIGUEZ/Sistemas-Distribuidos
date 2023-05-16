@@ -7,7 +7,7 @@ import java.util.regex.Pattern;
 
 public class Protocol {
 
-    public static String regexFormat = "FORMAT\\[(LOGIN|REGISTER|TABLERO_SET|DATA){1}\\]&";
+    public static String regexFormat = "FORMAT\\[(LOGIN|REGISTER|TABLERO_SET|DATA|SIZE_MATRIX|COUNT_ONLINE|CONFIRM_PLAY|INIT_PLAY){1}\\]&";
 
     public static String getFormat(String message) {
         CustomString cs = new CustomString();
@@ -79,6 +79,62 @@ public class Protocol {
         return map;
     }
 
+    public static Map<String, String> formatSizeMatrix(String message) throws ErrorFormatException {
+        CustomString cs = new CustomString();
+        Map<String, String> map = new HashMap();
+        String lineId = cs.readUntil(message, "&");
+        if (!lineId.contains("SESSIONID")) {
+            throw new ErrorFormatException("format Size Matrix Error");
+        }
+        map.put("SESSIONID", cs.readContent(lineId, "[", "]"));
+        return map;
+    }
+
+    public static Map<String, String> formatCountOnline(String message) throws ErrorFormatException {
+        CustomString cs = new CustomString();
+        Map<String, String> map = new HashMap();
+        String lineId = cs.readUntil(message, "&");
+        if (!lineId.contains("SESSIONID")) {
+            throw new ErrorFormatException("format Size Matrix Error");
+        }
+        map.put("SESSIONID", cs.readContent(lineId, "[", "]"));
+        return map;
+    }
+
+    public static Map<String, String> formatConfirmPlay(String message) throws ErrorFormatException {
+        CustomString cs = new CustomString();
+        Map<String, String> map = new HashMap();
+        String lineId = cs.readUntil(message, "&");
+        if (!lineId.contains("SESSIONID")) {
+            throw new ErrorFormatException("format Size Matrix Error");
+        }
+        map.put("SESSIONID", cs.readContent(lineId, "[", "]"));
+        return map;
+    }
+
+    public static Map<String, String> formatInitPlay(String message) throws ErrorFormatException {
+        CustomString cs = new CustomString();
+        Map<String, String> map = new HashMap();
+        String lineId = cs.readUntil(message, "&");
+        if (!lineId.contains("SESSIONID")) {
+            throw new ErrorFormatException("format Size Matrix Error");
+        }
+        map.put("SESSIONID", cs.readContent(lineId, "[", "]"));
+        return map;
+    }
+
+    public static String setFormatNewUser() {
+        return String.format("FORMAT[NEW_USER]&");
+    }
+
+    public static String setFormatCountOnline(int count) {
+        return String.format("COUNT[%s]&FORMAT[COUNT_ONLINE]&", count);
+    }
+
+    public static String setFormatMatrix(int nfila, int ncolumna) {
+        return String.format("MATRIXFILA[%s]&MATRIXCOLUMNA[%s]&FORMAT[SIZE_MATRIX]&", nfila, ncolumna);
+    }
+
     public static String setFormatResponse(boolean ok, Response response, String message) {
         return String.format("OK[%s]&MESSAGE[%s]&RESPONSE[%s]&FORMAT[RESPONSE]&", ok, message, response.name());
     }
@@ -91,4 +147,11 @@ public class Protocol {
         return String.format("FORMAT[AUTHENTICATED]&");
     }
 
+    public static String setFormatConfirmPlay() {
+        return String.format("FORMAT[CONFIRM_PLAY]&");
+    }
+
+    public static String setFormatInitPlay() {
+        return String.format("FORMAT[INIT_PLAY]&");
+    }
 }

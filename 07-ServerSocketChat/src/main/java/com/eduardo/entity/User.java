@@ -20,7 +20,7 @@ public class User {
         this.name = name;
         this.password = password;
         this.sessionId = sessionId;
-        this.tablero = new Tablero(4, 4);
+        this.tablero = new Tablero();
     }
 
     public String getName() {

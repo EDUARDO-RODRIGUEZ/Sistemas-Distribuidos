@@ -23,6 +23,8 @@ public class ServerGame implements ServerListenerUser {
 
     private Map<UUID, User> users;
     private Server server;
+    private Map<Integer, User> userPlaying;
+    private int nextTurn;
 
     public ServerGame() {
         this(8000);
@@ -32,6 +34,8 @@ public class ServerGame implements ServerListenerUser {
         this.server = new Server(port);
         this.server.addServerListener(this);
         this.users = new HashMap<>();
+        this.userPlaying = new HashMap<>();
+        this.nextTurn = 0;
     }
 
     public void run() {
@@ -73,8 +77,20 @@ public class ServerGame implements ServerListenerUser {
             case "DATA":
                 data(e);
                 break;
+            case "SIZE_MATRIX":
+                sizeMatrix(e);
+                break;
+            case "COUNT_ONLINE":
+                countOnline(e);
+                break;
             case "TABLERO_SET":
                 setTablero(e);
+                break;
+            case "CONFIRM_PLAY":
+                confirmPlay(e);
+                break;
+            case "INIT_PLAY":
+                initPlay(e);
                 break;
             default:
                 System.out.println(LOG + " : Format Incorrected!!!");
@@ -98,7 +114,14 @@ public class ServerGame implements ServerListenerUser {
             }
             user.setSessionId(UUID.fromString(data.get("SESSIONID")));
             System.out.println(LOG + " : New User Login Connected");
-            server.send(UUID.fromString(data.get("SESSIONID")), Protocol.setFormatResponse(true, Response.LOGIN, "User successfully logged in !!!"), TypeSend.ONE);
+            int number = userPlaying.size();
+            userPlaying.put(number, user);
+            if (number == 0) {
+                server.send(UUID.fromString(data.get("SESSIONID")), Protocol.setFormatResponse(true, Response.LOGIN, String.valueOf(number)), TypeSend.ONE);
+                return;
+            }
+            server.send(UUID.fromString(data.get("SESSIONID")), Protocol.setFormatResponse(true, Response.LOGIN, String.valueOf(number)), TypeSend.ONE);
+            server.send(UUID.fromString(data.get("SESSIONID")), Protocol.setFormatNewUser(), TypeSend.ALL);
         } catch (ErrorFormatException ex) {
             System.out.println(LOG + ex.getMessage());
         }
@@ -134,6 +157,37 @@ public class ServerGame implements ServerListenerUser {
         }
     }
 
+    public void sizeMatrix(OnUserData e) {
+        try {
+            Map<String, String> data = Protocol.formatSizeMatrix(e.getData());
+            User user = findUserBySessionId(UUID.fromString(data.get("SESSIONID")));
+            if (Objects.isNull(user)) {
+                System.out.println("SESSIONID NO VALIDO !!!");
+                return;
+            }
+            server.send(user.getSessionId(), Protocol.setFormatMatrix(Tablero.NF, Tablero.NC), TypeSend.ONE);
+        } catch (ErrorFormatException ex) {
+            System.out.println(LOG + ex.getMessage());
+            ex.printStackTrace();
+        }
+    }
+
+    public void countOnline(OnUserData e) {
+        try {
+            Map<String, String> data = Protocol.formatCountOnline(e.getData());
+            User user = findUserBySessionId(UUID.fromString(data.get("SESSIONID")));
+            if (Objects.isNull(user)) {
+                System.out.println("SESSIONID NO VALIDO !!!");
+                return;
+            }
+            int count = userPlaying.size();
+            server.send(user.getSessionId(), Protocol.setFormatCountOnline(count), TypeSend.ONE);
+        } catch (ErrorFormatException ex) {
+            System.out.println(LOG + ex.getMessage());
+            ex.printStackTrace();
+        }
+    }
+
     public void setTablero(OnUserData e) {
         try {
             Map<String, String> data = Protocol.formatTableroSet(e.getData());
@@ -143,10 +197,41 @@ public class ServerGame implements ServerListenerUser {
                 return;
             }
             Tablero tablero = user.getTablero();
-            tablero.set(Integer.parseInt(data.get("ROW")), Integer.parseInt(data.get("COL")), Integer.parseInt(data.get("VALUE")));
+            Ship ship = new Ship(1);
+            tablero.set(Integer.parseInt(data.get("ROW")), Integer.parseInt(data.get("COL")), ship);
             tablero.show();
         } catch (ErrorFormatException ex) {
             System.out.println(LOG + ex.getMessage());
+        }
+    }
+
+    public void confirmPlay(OnUserData e) {
+        try {
+            Map<String, String> data = Protocol.formatConfirmPlay(e.getData());
+            User user = findUserBySessionId(UUID.fromString(data.get("SESSIONID")));
+            if (Objects.isNull(user)) {
+                System.out.println("SESSIONID NO VALIDO !!!");
+                return;
+            }
+            server.send(user.getSessionId(), Protocol.setFormatConfirmPlay(), TypeSend.ALL);
+        } catch (ErrorFormatException ex) {
+            System.out.println(LOG + ex.getMessage());
+            ex.printStackTrace();
+        }
+    }
+
+    public void initPlay(OnUserData e) {
+        try {
+            Map<String, String> data = Protocol.formatInitPlay(e.getData());
+            User user = findUserBySessionId(UUID.fromString(data.get("SESSIONID")));
+            if (Objects.isNull(user)) {
+                System.out.println("SESSIONID NO VALIDO !!!");
+                return;
+            }
+            server.send(user.getSessionId(), Protocol.setFormatInitPlay(), TypeSend.ALL);
+        } catch (ErrorFormatException ex) {
+            System.out.println(LOG + ex.getMessage());
+            ex.printStackTrace();
         }
     }
 

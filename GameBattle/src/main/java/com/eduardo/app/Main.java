@@ -46,7 +46,7 @@ public class Main extends javax.swing.JFrame implements ListenerGame {
     public void loadScreen(Screen screen) {
         setScreen(screen);
         JPanel panel = (JPanel) screen;
-        panel.setSize(800, 470);
+        panel.setSize(800, 540);
         jPanelContent.removeAll();
         jPanelContent.add(panel);
         jPanelContent.revalidate();
@@ -67,7 +67,7 @@ public class Main extends javax.swing.JFrame implements ListenerGame {
 
     @Override
     public void listenerGameData(OnGameData e) {
-        System.out.println("listenerGameData");
+        screen.OnData(e.getData());
     }
 
     @Override
@@ -101,17 +101,40 @@ public class Main extends javax.swing.JFrame implements ListenerGame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jPanelBackground = new com.eduardo.component.PanelRounded();
-        jButtonClose = new com.eduardo.component.JButtonRounded();
+        jPanelBackground = new com.eduardo.componentGeneric.PanelRounded();
         jPanelContent = new javax.swing.JPanel();
+        panelRoundedHeader = new com.eduardo.componentGeneric.PanelRounded();
         jLabelConnection = new javax.swing.JLabel();
+        jButtonClose = new com.eduardo.componentGeneric.JButtonRounded();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setUndecorated(true);
         setResizable(false);
 
         jPanelBackground.setBackground(new java.awt.Color(245, 245, 245));
-        jPanelBackground.setPreferredSize(new java.awt.Dimension(800, 500));
+        jPanelBackground.setPreferredSize(new java.awt.Dimension(800, 570));
+
+        jPanelContent.setBackground(new java.awt.Color(245, 245, 245));
+        jPanelContent.setAlignmentX(0.0F);
+        jPanelContent.setAlignmentY(0.0F);
+        jPanelContent.setPreferredSize(new java.awt.Dimension(800, 540));
+
+        javax.swing.GroupLayout jPanelContentLayout = new javax.swing.GroupLayout(jPanelContent);
+        jPanelContent.setLayout(jPanelContentLayout);
+        jPanelContentLayout.setHorizontalGroup(
+            jPanelContentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 800, Short.MAX_VALUE)
+        );
+        jPanelContentLayout.setVerticalGroup(
+            jPanelContentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 540, Short.MAX_VALUE)
+        );
+
+        panelRoundedHeader.setBackground(new java.awt.Color(245, 245, 245));
+        panelRoundedHeader.setBorder(javax.swing.BorderFactory.createEmptyBorder(5, 5, 5, 5));
+        panelRoundedHeader.setPreferredSize(new java.awt.Dimension(800, 30));
+
+        jLabelConnection.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/eduardo/image/offline.png"))); // NOI18N
 
         jButtonClose.setBackground(new java.awt.Color(245, 245, 245));
         jButtonClose.setForeground(new java.awt.Color(255, 255, 255));
@@ -125,46 +148,45 @@ public class Main extends javax.swing.JFrame implements ListenerGame {
             }
         });
 
-        jPanelContent.setBackground(new java.awt.Color(245, 245, 245));
-        jPanelContent.setPreferredSize(new java.awt.Dimension(800, 470));
-
-        javax.swing.GroupLayout jPanelContentLayout = new javax.swing.GroupLayout(jPanelContent);
-        jPanelContent.setLayout(jPanelContentLayout);
-        jPanelContentLayout.setHorizontalGroup(
-            jPanelContentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 800, Short.MAX_VALUE)
+        javax.swing.GroupLayout panelRoundedHeaderLayout = new javax.swing.GroupLayout(panelRoundedHeader);
+        panelRoundedHeader.setLayout(panelRoundedHeaderLayout);
+        panelRoundedHeaderLayout.setHorizontalGroup(
+            panelRoundedHeaderLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(panelRoundedHeaderLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabelConnection)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 736, Short.MAX_VALUE)
+                .addComponent(jButtonClose, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
-        jPanelContentLayout.setVerticalGroup(
-            jPanelContentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 460, Short.MAX_VALUE)
+        panelRoundedHeaderLayout.setVerticalGroup(
+            panelRoundedHeaderLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(panelRoundedHeaderLayout.createSequentialGroup()
+                .addGap(0, 0, Short.MAX_VALUE)
+                .addGroup(panelRoundedHeaderLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabelConnection, javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jButtonClose, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)))
         );
-
-        jLabelConnection.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/eduardo/image/offline.png"))); // NOI18N
 
         javax.swing.GroupLayout jPanelBackgroundLayout = new javax.swing.GroupLayout(jPanelBackground);
         jPanelBackground.setLayout(jPanelBackgroundLayout);
         jPanelBackgroundLayout.setHorizontalGroup(
             jPanelBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanelBackgroundLayout.createSequentialGroup()
-                .addGap(14, 14, 14)
-                .addComponent(jLabelConnection)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jButtonClose, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
-            .addGroup(jPanelBackgroundLayout.createSequentialGroup()
-                .addComponent(jPanelContent, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, Short.MAX_VALUE))
+                .addGroup(jPanelBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanelBackgroundLayout.createSequentialGroup()
+                        .addComponent(panelRoundedHeader, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addGroup(jPanelBackgroundLayout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(jPanelContent, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(0, 0, 0))
         );
         jPanelBackgroundLayout.setVerticalGroup(
             jPanelBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanelBackgroundLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanelBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jButtonClose, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabelConnection))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanelContent, javax.swing.GroupLayout.PREFERRED_SIZE, 460, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(panelRoundedHeader, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jPanelContent, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -173,13 +195,13 @@ public class Main extends javax.swing.JFrame implements ListenerGame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addComponent(jPanelBackground, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, Short.MAX_VALUE))
+                .addGap(0, 0, 0))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addComponent(jPanelBackground, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, Short.MAX_VALUE))
+                .addGap(0, 0, 0))
         );
 
         pack();
@@ -227,10 +249,11 @@ public class Main extends javax.swing.JFrame implements ListenerGame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private com.eduardo.component.JButtonRounded jButtonClose;
+    private com.eduardo.componentGeneric.JButtonRounded jButtonClose;
     private javax.swing.JLabel jLabelConnection;
-    private com.eduardo.component.PanelRounded jPanelBackground;
+    private com.eduardo.componentGeneric.PanelRounded jPanelBackground;
     private javax.swing.JPanel jPanelContent;
+    private com.eduardo.componentGeneric.PanelRounded panelRoundedHeader;
     // End of variables declaration//GEN-END:variables
 
     private int x, y;

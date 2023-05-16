@@ -7,7 +7,7 @@ import java.util.regex.Pattern;
 
 public class Protocol {
 
-    public static String regexFormat = "FORMAT\\[(DATA|ID|AUTHENTICATED|RESPONSE){1}\\]&";
+    public static String regexFormat = "FORMAT\\[(DATA|ID|AUTHENTICATED|RESPONSE|SIZE_MATRIX|COUNT_ONLINE|NEW_USER|CONFIRM_PLAY|INIT_PLAY){1}\\]&";
 
     public static String getFormat(String message) {
         CustomString cs = new CustomString();
@@ -32,6 +32,19 @@ public class Protocol {
         return map;
     }
 
+    public static Map<String, String> formatSizeMatrix(String message) throws ErrorFormatException {
+        CustomString cs = new CustomString();
+        Map<String, String> map = new HashMap();
+        String lineFila = cs.readUntil(message, "&");
+        String lineColumna = cs.readUntil(message, "&");
+        if (!lineFila.contains("MATRIXFILA") || !lineColumna.contains("MATRIXCOLUMNA")) {
+            throw new ErrorFormatException("format size matrix Error");
+        }
+        map.put("MATRIXFILA", cs.readContent(lineFila, "[", "]"));
+        map.put("MATRIXCOLUMNA", cs.readContent(lineColumna, "[", "]"));
+        return map;
+    }
+
     public static Map<String, String> formatID(String message) throws ErrorFormatException {
         CustomString cs = new CustomString();
         Map<String, String> map = new HashMap();
@@ -40,6 +53,17 @@ public class Protocol {
             throw new ErrorFormatException("format Data Error");
         }
         map.put("SESSIONID", cs.readContent(lineId, "[", "]"));
+        return map;
+    }
+
+    public static Map<String, String> formatCountOnline(String message) throws ErrorFormatException {
+        CustomString cs = new CustomString();
+        Map<String, String> map = new HashMap();
+        String lineCount = cs.readUntil(message, "&");
+        if (!lineCount.contains("COUNT")) {
+            throw new ErrorFormatException("format Data Error");
+        }
+        map.put("COUNT", cs.readContent(lineCount, "[", "]"));
         return map;
     }
 
@@ -78,6 +102,22 @@ public class Protocol {
         return String.format("SESSIONID[%s]&ROW[%s]&COL[%s]&VALUE[%s]&FORMAT[TABLERO_SET]&",
                 sessionId, String.valueOf(row), String.valueOf(col), String.valueOf(tableroValue.getValue())
         );
+    }
+
+    public static String setFormatSizeMatrix(String sessionId) {
+        return String.format("SESSIONID[%s]&FORMAT[SIZE_MATRIX]&", sessionId);
+    }
+
+    public static String setFormatCountOnline(String sessionId) {
+        return String.format("SESSIONID[%s]&FORMAT[COUNT_ONLINE]&", sessionId);
+    }
+
+    public static String setFormatConfirmPlay(String sessionId) {
+        return String.format("SESSIONID[%s]&FORMAT[CONFIRM_PLAY]&", sessionId);
+    }
+
+    public static String setFormatInitPlay(String sessionId) {
+        return String.format("SESSIONID[%s]&FORMAT[INIT_PLAY]&", sessionId);
     }
 
 }

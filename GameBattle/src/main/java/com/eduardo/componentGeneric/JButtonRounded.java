@@ -1,4 +1,4 @@
-package com.eduardo.component;
+package com.eduardo.componentGeneric;
 
 import java.awt.Cursor;
 import java.awt.Graphics;

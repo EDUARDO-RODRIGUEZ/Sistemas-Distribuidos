@@ -1,4 +1,4 @@
-package com.eduardo.component;
+package com.eduardo.componentGeneric;
 
 import java.awt.Graphics;
 import java.awt.Graphics2D;

@@ -1,4 +1,4 @@
-package com.eduardo.component;
+package com.eduardo.componentGeneric;
 
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;

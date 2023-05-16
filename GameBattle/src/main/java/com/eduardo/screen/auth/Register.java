@@ -3,7 +3,7 @@ package com.eduardo.screen.auth;
 import com.eduardo.app.*;
 import com.eduardo.client.SocketClient;
 import com.eduardo.helper.Protocol;
-import com.eduardo.screen.Game;
+import com.eduardo.screen.FieldShip;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -47,18 +47,19 @@ public class Register extends javax.swing.JPanel implements Screen {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        panelRounded1 = new com.eduardo.component.PanelRounded();
-        jTextFieldName = new com.eduardo.component.JTextFieldPlaceHolder();
+        panelRounded1 = new com.eduardo.componentGeneric.PanelRounded();
+        jTextFieldName = new com.eduardo.componentGeneric.JTextFieldPlaceHolder();
         jLabelName = new javax.swing.JLabel();
-        panelRounded2 = new com.eduardo.component.PanelRounded();
-        jPassword = new com.eduardo.component.JPasswordFieldPlaceHolder();
+        panelRounded2 = new com.eduardo.componentGeneric.PanelRounded();
+        jPassword = new com.eduardo.componentGeneric.JPasswordFieldPlaceHolder();
         jLabelPassword = new javax.swing.JLabel();
-        jButtonRegister = new com.eduardo.component.JButtonRounded();
+        jButtonRegister = new com.eduardo.componentGeneric.JButtonRounded();
         jLabelTitle = new javax.swing.JLabel();
         jLabelLinkLogin = new javax.swing.JLabel();
         jLabelMessage = new javax.swing.JLabel();
 
         setBackground(new java.awt.Color(245, 245, 245));
+        setPreferredSize(new java.awt.Dimension(800, 540));
 
         panelRounded1.setBackground(new java.awt.Color(204, 204, 204));
 
@@ -165,8 +166,8 @@ public class Register extends javax.swing.JPanel implements Screen {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addGap(14, 14, 14)
-                .addComponent(jLabelTitle, javax.swing.GroupLayout.DEFAULT_SIZE, 56, Short.MAX_VALUE)
-                .addGap(40, 40, 40)
+                .addComponent(jLabelTitle, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
                 .addComponent(jLabelName)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(panelRounded1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -178,7 +179,7 @@ public class Register extends javax.swing.JPanel implements Screen {
                 .addComponent(jLabelLinkLogin, javax.swing.GroupLayout.PREFERRED_SIZE, 15, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(jButtonRegister, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 96, Short.MAX_VALUE)
                 .addComponent(jLabelMessage, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(33, 33, 33))
         );
@@ -197,16 +198,16 @@ public class Register extends javax.swing.JPanel implements Screen {
     }//GEN-LAST:event_jButtonRegisterActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private com.eduardo.component.JButtonRounded jButtonRegister;
+    private com.eduardo.componentGeneric.JButtonRounded jButtonRegister;
     private javax.swing.JLabel jLabelLinkLogin;
     private javax.swing.JLabel jLabelMessage;
     private javax.swing.JLabel jLabelName;
     private javax.swing.JLabel jLabelPassword;
     private javax.swing.JLabel jLabelTitle;
-    private com.eduardo.component.JPasswordFieldPlaceHolder jPassword;
-    private com.eduardo.component.JTextFieldPlaceHolder jTextFieldName;
-    private com.eduardo.component.PanelRounded panelRounded1;
-    private com.eduardo.component.PanelRounded panelRounded2;
+    private com.eduardo.componentGeneric.JPasswordFieldPlaceHolder jPassword;
+    private com.eduardo.componentGeneric.JTextFieldPlaceHolder jTextFieldName;
+    private com.eduardo.componentGeneric.PanelRounded panelRounded1;
+    private com.eduardo.componentGeneric.PanelRounded panelRounded2;
     // End of variables declaration//GEN-END:variables
 
     @Override
@@ -239,8 +240,11 @@ public class Register extends javax.swing.JPanel implements Screen {
 
     public void responseRegister(boolean ok, String message) {
         if (ok) {
-            main.loadScreen(new Game(main));
-            return;
+            if (message.equalsIgnoreCase("0")) {
+                main.loadScreen(new FieldShip(main, "play"));
+                return;
+            }
+            main.loadScreen(new FieldShip(main, "confirm"));
         }
         jLabelMessage.setText(message);
     }

@@ -3,7 +3,6 @@ package com.eduardo.screen;
 import com.eduardo.app.Main;
 import com.eduardo.app.Screen;
 import com.eduardo.screen.auth.Login;
-import com.eduardo.component.*;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
@@ -32,9 +31,10 @@ public class Home extends javax.swing.JPanel implements Screen {
     private void initComponents() {
 
         jLabelTitle = new javax.swing.JLabel();
-        jButtonPlay = new com.eduardo.component.JButtonRounded();
+        jButtonPlay = new com.eduardo.componentGeneric.JButtonRounded();
 
         setBackground(new java.awt.Color(245, 245, 245));
+        setPreferredSize(new java.awt.Dimension(800, 540));
 
         jLabelTitle.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/eduardo/image/battlegame.png"))); // NOI18N
 
@@ -52,23 +52,23 @@ public class Home extends javax.swing.JPanel implements Screen {
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGap(315, 315, 315)
-                .addComponent(jButtonPlay, javax.swing.GroupLayout.PREFERRED_SIZE, 153, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addGap(243, 243, 243)
                 .addComponent(jLabelTitle, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGap(257, 257, 257))
+            .addGroup(layout.createSequentialGroup()
+                .addGap(315, 315, 315)
+                .addComponent(jButtonPlay, javax.swing.GroupLayout.PREFERRED_SIZE, 153, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addGap(63, 63, 63)
                 .addComponent(jLabelTitle)
-                .addGap(18, 18, 18)
+                .addGap(44, 44, 44)
                 .addComponent(jButtonPlay, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(203, Short.MAX_VALUE))
+                .addContainerGap(247, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -79,7 +79,7 @@ public class Home extends javax.swing.JPanel implements Screen {
     }//GEN-LAST:event_jButtonPlayActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private com.eduardo.component.JButtonRounded jButtonPlay;
+    private com.eduardo.componentGeneric.JButtonRounded jButtonPlay;
     private javax.swing.JLabel jLabelTitle;
     // End of variables declaration//GEN-END:variables
 
