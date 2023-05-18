@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 
 <Form version="1.8" maxVersion="1.9" type="org.netbeans.modules.form.forminfo.JPanelFormInfo">
+  <NonVisualComponents>
+    <Component class="javax.swing.JScrollBar" name="jScrollBar1">
+    </Component>
+  </NonVisualComponents>
   <Properties>
     <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
       <Color blue="f5" green="f5" red="f5" type="rgb"/>
@@ -24,25 +28,28 @@
   <Layout>
     <DimensionLayout dim="0">
       <Group type="103" groupAlignment="0" attributes="0">
-          <Group type="102" attributes="0">
+          <Group type="102" alignment="0" attributes="0">
+              <EmptySpace min="-2" pref="12" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
-                  <Group type="102" alignment="0" attributes="0">
-                      <EmptySpace min="-2" pref="254" max="-2" attributes="0"/>
-                      <Component id="jLabelTitle" min="-2" max="-2" attributes="0"/>
-                  </Group>
-                  <Group type="102" alignment="0" attributes="0">
-                      <EmptySpace min="-2" pref="12" max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="0" attributes="0">
-                          <Group type="102" attributes="0">
-                              <Component id="panelRoundedField" min="-2" pref="380" max="-2" attributes="0"/>
-                              <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                              <Component id="panelRoundedField1" min="-2" pref="380" max="-2" attributes="0"/>
-                          </Group>
-                          <Component id="jLabel1" alignment="0" min="-2" pref="155" max="-2" attributes="0"/>
-                          <Component id="jLabel2" alignment="0" min="-2" max="-2" attributes="0"/>
+                  <Group type="103" alignment="0" groupAlignment="0" attributes="0">
+                      <Component id="panelRoundedField" alignment="1" min="-2" pref="380" max="-2" attributes="0"/>
+                      <Group type="102" alignment="0" attributes="0">
+                          <Component id="jLabel1" min="-2" pref="155" max="-2" attributes="0"/>
+                          <EmptySpace min="-2" pref="237" max="-2" attributes="0"/>
                       </Group>
                   </Group>
+                  <Component id="jLabel2" alignment="0" min="-2" max="-2" attributes="0"/>
               </Group>
+              <EmptySpace max="32767" attributes="0"/>
+              <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                  <Component id="panelRoundedField1" pref="380" max="32767" attributes="0"/>
+                  <Component id="jLabelTurn" max="32767" attributes="0"/>
+              </Group>
+              <EmptySpace pref="10" max="32767" attributes="0"/>
+          </Group>
+          <Group type="102" alignment="0" attributes="0">
+              <EmptySpace min="-2" pref="254" max="-2" attributes="0"/>
+              <Component id="jLabelTitle" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
           </Group>
       </Group>
@@ -62,11 +69,19 @@
                       <Component id="panelRoundedField1" min="-2" pref="347" max="-2" attributes="0"/>
                   </Group>
               </Group>
-              <EmptySpace max="-2" attributes="0"/>
-              <Component id="jLabel1" min="-2" max="-2" attributes="0"/>
-              <EmptySpace max="-2" attributes="0"/>
-              <Component id="jLabel2" min="-2" pref="48" max="-2" attributes="0"/>
-              <EmptySpace pref="25" max="32767" attributes="0"/>
+              <EmptySpace type="separate" max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="0" attributes="0">
+                  <Group type="102" attributes="0">
+                      <Component id="jLabel1" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Component id="jLabel2" min="-2" pref="48" max="-2" attributes="0"/>
+                  </Group>
+                  <Group type="102" alignment="0" attributes="0">
+                      <EmptySpace min="-2" pref="10" max="-2" attributes="0"/>
+                      <Component id="jLabelTurn" min="-2" pref="48" max="-2" attributes="0"/>
+                  </Group>
+              </Group>
+              <EmptySpace pref="13" max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -136,6 +151,7 @@
             <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
               <Color blue="cc" green="cc" red="cc" type="rgb"/>
             </Property>
+            <Property name="name" type="java.lang.String" value="panelRoundedTablero" noResource="true"/>
           </Properties>
 
           <Layout class="org.netbeans.modules.form.compat2.layouts.DesignGridLayout">
@@ -202,6 +218,7 @@
             <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
               <Color blue="cc" green="cc" red="cc" type="rgb"/>
             </Property>
+            <Property name="name" type="java.lang.String" value="panelRoundedTableroEnemy" noResource="true"/>
           </Properties>
 
           <Layout class="org.netbeans.modules.form.compat2.layouts.DesignGridLayout">
@@ -246,6 +263,11 @@
           <Image iconType="3" name="/com/eduardo/image/poison.png"/>
         </Property>
         <Property name="text" type="java.lang.String" value="Enemy Destroy :"/>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JLabel" name="jLabelTurn">
+      <Properties>
+        <Property name="horizontalAlignment" type="int" value="0"/>
       </Properties>
     </Component>
   </SubComponents>

@@ -5,14 +5,13 @@ import java.util.Objects;
 public class Tablero {
 
     public static int tableroGame = 0;
-    public static int NF = 6;
-    public static int NC = 6;
+    public static int NF = 3;
+    public static int NC = 3;
 
     private Ship[][] data;
 
     public Tablero() {
         this.data = new Ship[NF][NC];
-        tableroGame++;
     }
 
     public void set(int fila, int columna, Ship ship) {
@@ -34,4 +33,29 @@ public class Tablero {
             System.out.println("]");
         }
     }
+
+    public Ship[][] getData() {
+        return data;
+    }
+
+    public boolean ShootShip(int row, int col) {
+        if (Objects.nonNull(data[row][col])) {
+            data[row][col] = null;
+            return true;
+        }
+        return false;
+    }
+
+    public boolean BoardEmpty() {
+        for (int f = 0; f < NF; f++) {
+            for (int c = 0; c < NC; c++) {
+                if (Objects.nonNull(data[f][c])) {
+                    return false;
+                }
+            }
+        }
+        tableroGame--;
+        return true;
+    }
+
 }

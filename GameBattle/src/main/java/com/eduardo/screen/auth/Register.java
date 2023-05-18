@@ -2,7 +2,7 @@ package com.eduardo.screen.auth;
 
 import com.eduardo.app.*;
 import com.eduardo.client.SocketClient;
-import com.eduardo.helper.Protocol;
+import com.eduardo.helper.ProtocolClient;
 import com.eduardo.screen.FieldShip;
 import java.awt.Color;
 import java.awt.Graphics;
@@ -194,7 +194,7 @@ public class Register extends javax.swing.JPanel implements Screen {
         String name = jTextFieldName.getText();
         String password = String.valueOf(jPassword.getPassword());
         SocketClient socketClient = main.getSocketClient();
-        socketClient.send(Protocol.setFormatRegister(String.valueOf(socketClient.getSessionId()), name, password));
+        socketClient.send(ProtocolClient.setFormatRegister(String.valueOf(socketClient.getSessionId()), name, password));
     }//GEN-LAST:event_jButtonRegisterActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

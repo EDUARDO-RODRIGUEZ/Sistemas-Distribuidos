@@ -8,7 +8,7 @@ import com.eduardo.event.OnSocketClose;
 import com.eduardo.event.OnSocketConnection;
 import com.eduardo.event.OnSocketData;
 import com.eduardo.helper.ErrorFormatException;
-import com.eduardo.helper.Protocol;
+import com.eduardo.helper.ProtocolClient;
 import com.eduardo.listener.ListenerGame;
 import com.eduardo.listener.ListenerSocket;
 import java.net.Socket;
@@ -50,7 +50,7 @@ public class SocketClient implements ListenerSocket {
     
     @Override
     public void listenerData(OnSocketData e) {
-        switch (Protocol.getFormat(e.getData())) {
+        switch (ProtocolClient.getFormat(e.getData())) {
             case "ID":
                 handlerSaveId(e);
                 break;
@@ -72,7 +72,7 @@ public class SocketClient implements ListenerSocket {
     
     public void handlerSaveId(OnSocketData e) {
         try {
-            Map<String, String> map = Protocol.formatID(e.getData());
+            Map<String, String> map = ProtocolClient.formatID(e.getData());
             sessionId = UUID.fromString(map.get("SESSIONID"));
         } catch (ErrorFormatException ex) {
             System.out.println(ex.getMessage());
@@ -89,7 +89,7 @@ public class SocketClient implements ListenerSocket {
     
     public void handlerResponse(OnSocketData e) {
         try {
-            Map<String, String> map = Protocol.formatResponse(e.getData());
+            Map<String, String> map = ProtocolClient.formatResponse(e.getData());
             lauchEvent(new OnGameResponse(SocketClient.this, Boolean.valueOf(map.get("OK")), map.get("RESPONSE"), map.get("MESSAGE")));
         } catch (ErrorFormatException ex) {
             System.out.println(ex.getMessage());

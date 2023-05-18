@@ -1,13 +1,15 @@
 package com.eduardo.helper;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class Protocol {
+public class ProtocolClient {
 
-    public static String regexFormat = "FORMAT\\[(DATA|ID|AUTHENTICATED|RESPONSE|SIZE_MATRIX|COUNT_ONLINE|NEW_USER|CONFIRM_PLAY|INIT_PLAY){1}\\]&";
+    public static String regexFormat = "FORMAT\\[(DATA|ID|AUTHENTICATED|RESPONSE|SIZE_MATRIX|COUNT_ONLINE|NEW_USER|CONFIRM_PLAY|INIT_PLAY|GET_SHIPS_TABLERO|SHOOT_SHIP|DESTROY_SHIP|GAME_OVER|WINNER|SHOOT_SHIP|TURN_SHOOT){1}\\]&";
 
     public static String getFormat(String message) {
         CustomString cs = new CustomString();
@@ -67,6 +69,30 @@ public class Protocol {
         return map;
     }
 
+    public static Map<String, String> formatDestroyShip(String message) throws ErrorFormatException {
+        CustomString cs = new CustomString();
+        Map<String, String> map = new HashMap();
+        String lineRow = cs.readUntil(message, "&");
+        String lineCol = cs.readUntil(message, "&");
+        if (!lineRow.contains("ROW") || !lineCol.contains("COL")) {
+            throw new ErrorFormatException("format DestroyShip Error");
+        }
+        map.put("ROW", cs.readContent(lineRow, "[", "]"));
+        map.put("COL", cs.readContent(lineCol, "[", "]"));
+        return map;
+    }
+
+    public static Map<String, String> formatShootShip(String message) throws ErrorFormatException {
+        CustomString cs = new CustomString();
+        Map<String, String> map = new HashMap();
+        String lineValue = cs.readUntil(message, "&");
+        if (!lineValue.contains("VALUE")) {
+            throw new ErrorFormatException("format ShootShip Error");
+        }
+        map.put("VALUE", cs.readContent(lineValue, "[", "]"));
+        return map;
+    }
+
     public static Map<String, String> formatResponse(String message) throws ErrorFormatException {
         Map<String, String> map = new HashMap<>();
         CustomString cs = new CustomString();
@@ -80,6 +106,32 @@ public class Protocol {
         map.put("MESSAGE", cs.readContent(lineMessage, "[", "]"));
         map.put("RESPONSE", cs.readContent(lineResponse, "[", "]"));
         return map;
+    }
+
+    public static List<Map<String, String>> formatGetShipsTablero(String message) throws ErrorFormatException {
+        List<Map<String, String>> ships = new ArrayList<>();
+        CustomString cs1 = new CustomString();
+        CustomString cs2 = new CustomString();
+        String line = "";
+        while (true) {
+            line = cs1.readUntil(message, "&");
+            if (line.contains("FORMAT")) {
+                break;
+            }
+            Map<String, String> data = new HashMap<>();
+            String Row = cs2.readUntil(line, "$");
+            String Col = cs2.readUntil(line, "$");
+            String Value = cs2.readUntil(line, "$");
+            if (!Row.contains("ROW") || !Col.contains("COL") || !Value.contains("VALUE")) {
+                throw new ErrorFormatException("format Data Error formatGetShipsTablero");
+            }
+            data.put("ROW", cs2.readContent(Row, "[", "]"));
+            data.put("COL", cs2.readContent(Col, "[", "]"));
+            data.put("VALUE", cs2.readContent(Value, "[", "]"));
+            ships.add(data);
+            cs2.resetPos();
+        }
+        return ships;
     }
 
     public static String setFormatLogin(String sessionId, String name, String password) {
@@ -118,6 +170,14 @@ public class Protocol {
 
     public static String setFormatInitPlay(String sessionId) {
         return String.format("SESSIONID[%s]&FORMAT[INIT_PLAY]&", sessionId);
+    }
+
+    public static String setFormatGetShipsBoard(String sessionId) {
+        return String.format("SESSIONID[%s]&FORMAT[GET_SHIPS_TABLERO]&", sessionId);
+    }
+
+    public static String setFormatShootShips(String sessionId, int row, int col) {
+        return String.format("SESSIONID[%s]&ROW[%s]&COL[%s]&FORMAT[SHOOT_SHIPS]&", sessionId, row, col);
     }
 
 }

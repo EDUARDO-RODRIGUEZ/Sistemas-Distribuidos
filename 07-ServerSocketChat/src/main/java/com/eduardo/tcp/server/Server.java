@@ -6,7 +6,7 @@ import com.eduardo.event.OnMessage;
 import com.eduardo.event.OnClose;
 import com.eduardo.event.OnUserConnected;
 import com.eduardo.event.OnUserData;
-import com.eduardo.helper.Protocol;
+import com.eduardo.helper.ProtocolServer;
 import com.eduardo.listener.ServerListenerUser;
 
 import java.io.IOException;
@@ -90,7 +90,7 @@ public class Server implements ServerListener {
         session.addServerListener(this);
         executor.execute(session);
         System.out.println(LOG + " : New Session Connected");
-        send(session.getId(), Protocol.setFormatId(String.valueOf(session.getId())), TypeSend.ONE);
+        send(session.getId(), ProtocolServer.setFormatId(String.valueOf(session.getId())), TypeSend.ONE);
         launchEvent(new OnUserConnected(Server.this, session.getId()));
     }
 

@@ -2,7 +2,7 @@ package com.eduardo.screen.auth;
 
 import com.eduardo.app.*;
 import com.eduardo.client.SocketClient;
-import com.eduardo.helper.Protocol;
+import com.eduardo.helper.ProtocolClient;
 import com.eduardo.helper.Response;
 import com.eduardo.screen.FieldShip;
 import java.awt.Color;
@@ -197,7 +197,7 @@ public class Login extends javax.swing.JPanel implements Screen {
         String user = jTextFieldName.getText();
         String password = String.valueOf(jPassword.getPassword());
         SocketClient socketClient = main.getSocketClient();
-        String data = Protocol.setFormatLogin(String.valueOf(socketClient.getSessionId()), user, password);
+        String data = ProtocolClient.setFormatLogin(String.valueOf(socketClient.getSessionId()), user, password);
         socketClient.send(data);
     }//GEN-LAST:event_jButtonLoginActionPerformed
 

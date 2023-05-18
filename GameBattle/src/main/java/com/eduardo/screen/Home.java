@@ -5,7 +5,10 @@ import com.eduardo.app.Screen;
 import com.eduardo.screen.auth.Login;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Image;
 import java.awt.RenderingHints;
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
 
 public class Home extends javax.swing.JPanel implements Screen {
 

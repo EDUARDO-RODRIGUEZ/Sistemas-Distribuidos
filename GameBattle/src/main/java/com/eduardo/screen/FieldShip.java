@@ -4,9 +4,10 @@ import com.eduardo.app.Main;
 import com.eduardo.app.Screen;
 import com.eduardo.client.SocketClient;
 import com.eduardo.helper.ErrorFormatException;
-import com.eduardo.helper.Protocol;
+import com.eduardo.helper.ProtocolClient;
 import com.eduardo.helper.TableroValue;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Cursor;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -15,6 +16,8 @@ import java.awt.RenderingHints;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.Map;
+import java.util.Objects;
+import java.util.Random;
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
@@ -51,12 +54,12 @@ public class FieldShip extends javax.swing.JPanel implements Screen {
 
     public void getSizeMatrix() {
         SocketClient socketClient = main.getSocketClient();
-        socketClient.send(Protocol.setFormatSizeMatrix(String.valueOf(socketClient.getSessionId())));
+        socketClient.send(ProtocolClient.setFormatSizeMatrix(String.valueOf(socketClient.getSessionId())));
     }
 
     public void getOnline() {
         SocketClient socketClient = main.getSocketClient();
-        socketClient.send(Protocol.setFormatCountOnline(String.valueOf(socketClient.getSessionId())));
+        socketClient.send(ProtocolClient.setFormatCountOnline(String.valueOf(socketClient.getSessionId())));
     }
 
     public void handleClickCell(MouseEvent e) {
@@ -73,7 +76,30 @@ public class FieldShip extends javax.swing.JPanel implements Screen {
         int fila = index / count;
         int columna = index % count;
         SocketClient socketClient = main.getSocketClient();
-        socketClient.send(Protocol.setFormatTableroSet(String.valueOf(socketClient.getSessionId()), fila, columna, TableroValue.ELEMENT));
+        socketClient.send(ProtocolClient.setFormatTableroSet(String.valueOf(socketClient.getSessionId()), fila, columna, TableroValue.ELEMENT));
+    }
+
+    public void fillGridRandom() {
+        if (jLabelShip1Count.getText().contains("0")) {
+            return;
+        }
+        int count = (int) Math.sqrt(panelRoundedGrid.getComponents().length);
+        int nshipsfree = Integer.parseInt(jLabelShip1Count.getText());
+        Random random = new Random();
+        int ncell = panelRoundedGrid.getComponents().length;
+        while (nshipsfree > 0) {
+            int index = random.nextInt(ncell);
+            JLabel jLabel = (JLabel) panelRoundedGrid.getComponent(index);
+            if (Objects.isNull(jLabel.getIcon())) {
+                int fila = index / count;
+                int columna = index % count;
+                SocketClient socketClient = main.getSocketClient();
+                socketClient.send(ProtocolClient.setFormatTableroSet(String.valueOf(socketClient.getSessionId()), fila, columna, TableroValue.ELEMENT));
+                jLabel.setIcon(new ImageIcon(getClass().getResource("/com/eduardo/image/shipleveltwo32.png")));
+                nshipsfree--;
+            }
+        }
+        jLabelShip1Icon.setText("0");
     }
 
     @SuppressWarnings("unchecked")
@@ -261,17 +287,20 @@ public class FieldShip extends javax.swing.JPanel implements Screen {
 
     private void jButtonRoundedPlayActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonRoundedPlayActionPerformed
         if (jButtonRoundedPlay.getText().equalsIgnoreCase("play")) {
+            fillGridRandom();
             GridLayout board = (GridLayout) panelRoundedGrid.getLayout();
             SocketClient socketClient = main.getSocketClient();
-            socketClient.send(Protocol.setFormatInitPlay(String.valueOf(socketClient.getSessionId())));
-            main.loadScreen(new Game(main, board.getRows(), board.getColumns()));
+            socketClient.send(ProtocolClient.setFormatInitPlay(String.valueOf(socketClient.getSessionId())));
+            Game game = new Game(main, board.getRows(), board.getColumns(), true);
+            main.loadScreen(game);
+            game.init();
         } else {
             int confirm = Integer.parseInt(jLabelConfirm.getText());
             jLabelConfirm.setText(String.valueOf((confirm + 1)));
             jButtonRoundedPlay.setBackground(Color.GRAY);
             jButtonRoundedPlay.setEnabled(false);
             SocketClient socketClient = main.getSocketClient();
-            socketClient.send(Protocol.setFormatConfirmPlay(String.valueOf(socketClient.getSessionId())));
+            socketClient.send(ProtocolClient.setFormatConfirmPlay(String.valueOf(socketClient.getSessionId())));
         }
     }//GEN-LAST:event_jButtonRoundedPlayActionPerformed
 
@@ -323,7 +352,7 @@ public class FieldShip extends javax.swing.JPanel implements Screen {
 
     public void handlerSizeMatrix(String data) {
         try {
-            Map<String, String> map = Protocol.formatSizeMatrix(data);
+            Map<String, String> map = ProtocolClient.formatSizeMatrix(data);
             loadMatrix(Integer.parseInt(map.get("MATRIXFILA")), Integer.parseInt(map.get("MATRIXCOLUMNA")));
         } catch (ErrorFormatException ex) {
             System.out.println(ex);
@@ -332,7 +361,7 @@ public class FieldShip extends javax.swing.JPanel implements Screen {
 
     public void handlerCountOnline(String data) {
         try {
-            Map<String, String> map = Protocol.formatCountOnline(data);
+            Map<String, String> map = ProtocolClient.formatCountOnline(data);
             int count = Integer.parseInt(map.get("COUNT"));
             jLabelCountOnline.setText(String.valueOf(count));
         } catch (ErrorFormatException ex) {
@@ -351,13 +380,16 @@ public class FieldShip extends javax.swing.JPanel implements Screen {
     }
 
     public void handlerInitPlay() {
+        fillGridRandom();
         GridLayout board = (GridLayout) panelRoundedGrid.getLayout();
-        main.loadScreen(new Game(main, board.getRows(), board.getColumns()));
+        Game game = new Game(main, board.getRows(), board.getColumns());
+        main.loadScreen(game);
+        game.init();
     }
 
     @Override
     public void OnData(String data) {
-        switch (Protocol.getFormat(data)) {
+        switch (ProtocolClient.getFormat(data)) {
             case "SIZE_MATRIX":
                 handlerSizeMatrix(data);
                 break;
